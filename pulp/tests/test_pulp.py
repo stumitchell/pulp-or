@@ -6,7 +6,7 @@ import tempfile
 
 from pulp.constants import PulpError
 from pulp.apis import *
-from pulp import LpVariable, LpProblem, lpSum, LpConstraintVar, LpFractionConstraint
+from pulp import LpVariable, LpProblem, lpSum, lpDot, LpConstraintVar, LpFractionConstraint
 from pulp import constants as const
 from pulp.tests.bin_packing_problem import create_bin_packing_problem
 from pulp.utilities import makeDict
@@ -103,6 +103,19 @@ class BaseSolverTest:
             print("\t Testing zero subtraction")
             assert str(c2)
             assert c2[z] == 0
+
+        def test_pulp_002(self):
+            """
+            Test the lpDot operation
+            """
+            x = LpVariable("x")
+            y = LpVariable("y")
+            z = LpVariable("z")
+            a = [1, 2, 3]
+            assert dict(lpDot([x, y, z], a)) == {x: 1, y: 2, z: 3}
+            assert dict(lpDot([2*x, 2*y, 2*z], a)) == {x: 2, y: 4, z: 6}
+            assert dict(lpDot([x+y, y+z, z], a)) == {x: 1, y: 3, z: 5}
+            assert dict(lpDot(a, [x+y, y+z, z])) == {x: 1, y: 3, z: 5}
 
         def test_pulp_009(self):
             # infeasible
